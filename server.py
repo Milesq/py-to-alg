@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from pyflowchart import Flowchart
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
 
 
 def generate_flowchart_data(filename: str):
@@ -36,5 +38,8 @@ def index(body: Body):
 
     with open('output.svg', 'w') as f:
         f.write(svg)
+
+    drawing = svg2rlg("output.svg")
+    renderPM.drawToFile(drawing, "output.png", fmt="PNG")
 
     return {"ok": True}
