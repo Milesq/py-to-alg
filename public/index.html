@@ -1,0 +1,23 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+<script src="http://flowchart.js.org/flowchart-latest.js"></script>
+<div id="diagram"></div>
+
+<script defer>
+    (async () => {
+        const diagramElement = document.getElementById("diagram");
+        const { data } = await fetch("/program").then((r) => r.json());
+        const diagram = flowchart.parse(data);
+
+        diagramElement.innerHTML = "";
+        diagram.drawSVG("diagram");
+        const svg = btoa(diagramElement.innerHTML);
+
+        await fetch("/svg", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ svg }),
+        });
+    })();
+</script>
